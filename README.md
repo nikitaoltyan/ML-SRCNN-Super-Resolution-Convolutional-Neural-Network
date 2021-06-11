@@ -48,6 +48,38 @@ You can find a whole lot of image dataset mainly used for super-resolution exper
 Data_Preparing.ipynb
 ```
 
+```sh
+# The class for preparing data for using. It gets image directory, then gets data from there and divide images into quality and poor.
+class SkylineDataset(Dataset):
+    
+    def __init__(self, image_dir):
+        self.image_dir = image_dir
+        self.image_fns = os.listdir(image_dir)
+        
+    def __len__(self):
+        return len(self.image_fns)
+    
+    def __getitem__(self, index):
+        image_fn = self.image_fns[index]
+        image_fp = os.path.join(self.image_dir, image_fn)
+        image = Image.open(image_fp).convert('L')
+        quality, poor = self.split_image(image)
+        quality = self.transform(quality)
+        poor = self.transform(poor)
+        return quality, poor
+    
+    def split_image(self, image):
+        image = np.array(image)
+        quality, poor = image[:, :128], image[:, 128:]
+        return poor, quality
+
+    def transform(self, image):
+        transform_ops = transforms.Compose([
+            transforms.ToTensor()
+        ])
+        return transform_ops(image)
+```
+
 Below the line you can find a story of an idea of that dataset and how we get that data.
 
 ---
@@ -162,6 +194,55 @@ def psnr(label, outputs, max_val=1.):
 
 
 ## Results <a name="results"></a>
+
+After training the given function we got this results:
+
+<p align="center">
+<img src="./assets/loss_graph.png">
+</p>
+
+---
+
+<p align="center">
+<img src="./assets/psnr_graph.png">
+</p>
+
+As you can see, PSNR growed and stoped near 30 (it should be mentiond the dB range between 30 and 40 is cosidered as a good result). There was no point in continuing the training because of stop in decreasing of loss.
+
+We tested a banch of images:
+
+```sh
+test_batch_size = 8
+dataset = SkylineDataset(train_dir)
+data_loader = DataLoader(dataset, batch_size=test_batch_size)
+
+X, Y = next(iter(data_loader))
+Y_pred = model(X)
+
+fig, axes = plt.subplots(1, 3, figsize=(10, 5))
+use_image = 7
+
+truth = torchvision.utils.make_grid(Y[use_image], nrow=1)
+truth = truth.permute(1, 2, 0).detach().numpy()
+input = torchvision.utils.make_grid(X[use_image], nrow=1)
+input = input.permute(1, 2, 0).detach().numpy()
+pred = torchvision.utils.make_grid(Y_pred[use_image], nrow=1)
+pred = pred.permute(1, 2, 0).detach().numpy()
+
+
+axes[0].imshow(truth)
+axes[0].set_title("Ground Truth")
+axes[1].imshow(input)
+axes[1].set_title("Input")
+axes[2].imshow(pred)
+axes[2].set_title("Predicted")
+```
+
+And we got that predicted result:
+
+<p align="center">
+<img src="./assets/model_predict.png">
+</p>
 
 ## Dependency <a name="dependency"></a>
 
