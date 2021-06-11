@@ -115,11 +115,6 @@ def psnr(label, outputs, max_val=1.):
         return PSNR
 ```
 
-And that functios is available and called from the file:
-
-```sh
-psnr.py
-```
 
 ## Results <a name="results"></a>
 
