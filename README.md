@@ -165,6 +165,34 @@ class SRCNN(nn.Module):
         return x
 ```
 
+Train function:
+
+```sh
+def train(model, dataloader):
+    model.train()
+    running_loss = 0.0
+    running_psnr = 0.0
+    
+    for bi, data in tqdm(enumerate(dataloader), total=int(len(train_data)/dataloader.batch_size)):
+        image_data = data[1].to(device)
+        label = data[0].to(device)
+        
+        optimizer.zero_grad()
+        outputs = model(image_data)
+        
+        loss = criterion(label, outputs)
+        loss.backward()
+        optimizer.step()
+        running_loss += loss.item()
+
+        batch_psnr =  psnr(outputs, label)
+        running_psnr += batch_psnr
+
+    final_loss = running_loss/len(dataloader.dataset)
+    final_psnr = running_psnr/int(len(train_data)/dataloader.batch_size)
+    return final_loss, final_psnr
+```
+
 
 ## PSNR Function <a name="psnr_function"></a>
 
@@ -244,6 +272,30 @@ And we got that predicted result:
 <img src="./assets/model_predict.png">
 </p>
 
+**The best weights are available. Just download the following file:**
+
+```sh
+chechpoint.pth
+```
+
+And just apply it to your SRCNN model:
+
+```sh
+model = SRCNN().to(device)
+model.load_state_dict(torch.load('checkpoint.pth'))
+```
+
 ## Dependency <a name="dependency"></a>
 
+Following modules are used in the project:
+
+    * python >= 3.6
+    * numpy >= 1.19.5
+    * torch >= 1.8.1
+    * torchvision >= 0.9.1
+    * PIL.Image >= 7.1.2
+    * matplotlib >= 3.2.2
+
 ## References <a name="references"></a>
+
+[1] C. Dong, C. Change Loy, K. He, and X. Tang. Learning a Deep Convolutional Network for Image Super-Resolution, https://personal.ie.cuhk.edu.hk/~ccloy/files/eccv_2014_deepresolution.pdf
