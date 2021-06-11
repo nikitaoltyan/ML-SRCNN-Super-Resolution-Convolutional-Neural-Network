@@ -73,13 +73,13 @@ So we resized them into 1024x1024, bet it still was too big and expensive for re
 So we tried to crop them into batches of 16 pieces with 256x256 size each but is was hopeless. That gave us an 4000 items dataset that wasn’t enough, especially in difficult parts where sky and buildings are together. The pixelation didn’t disappear, but blur was added.
 
 <p align="center">
-<img src="./assets/wrong_working_example.JPG">
+<img src="./assets/wrong_working_example.jpg">
 </p>
 
 In the final stage of data preparing we changed “RGB” color channels into “L” (black and white) and divided original images into batches of 64 pieces with 128x128 size each. That’s how we get our dataset that now available.
 
 <p align="center">
-<img src="./assets/test_images_stack.JPG">
+<img src="./assets/test_images_stack.png">
 </p>
 
 ## Model <a name="model"></a>
