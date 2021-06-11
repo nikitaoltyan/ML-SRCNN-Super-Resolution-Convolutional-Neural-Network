@@ -89,6 +89,51 @@ In the final stage of data preparing we changed “RGB” color channels into �
 
 ## Model <a name="model"></a>
 
+We used SRCNN architecture, that was discovered on that <a href="https://personal.ie.cuhk.edu.hk/~ccloy/files/eccv_2014_deepresolution.pdf">paper</a>.
+
+According to the authors:
+
+> We propose a deep learning method for single image super-resolution (SR).
+> Our method directly learns an end-to-end mapping between the low/high-resolution images.
+> The mapping is represented as a deep convolutional neural network (CNN)
+> that takes the low-resolution image as the input and outputs the high-resolution one. 
+
+We copied their architecture and trained our model for improving skylines photos with our dataset.
+
+According to the authors, SRCNN shows the best results through Bicubic and SC techniques.
+
+<p align="center">
+<img src="./assets/SRCNN_example.png">
+</p>
+
+But how it works? Authors suggested that there’s enough only 3 layers to do that.
+
+Given a low-resolution image Y, the first convolutional layer of the SRCNN extracts a set of feature maps. The second layer maps these feature maps nonlinearly to high-resolution patch representations. The last layer combines the predictions within a spatial neighbourhood to produce the final high-resolution image F(Y).
+
+<p align="center">
+<img src="./assets/SRCNN_example_2.png">
+</p>
+
+```sh
+import torch.nn as nn
+import torch.nn.functional as F
+
+class SRCNN(nn.Module):
+  
+    def __init__(self):
+        super(SRCNN, self).__init__()
+        self.conv1 = nn.Conv2d(1, 64, kernel_size=9, padding=2, padding_mode='replicate')
+        self.conv2 = nn.Conv2d(64, 32, kernel_size=1, padding=2, padding_mode='replicate')
+        self.conv3 = nn.Conv2d(32, 1, kernel_size=5, padding=2, padding_mode='replicate')
+
+    def forward(self, x):
+        x = F.relu(self.conv1(x))
+        x = F.relu(self.conv2(x))
+        x = self.conv3(x)
+        return x
+```
+
+
 ## PSNR Function <a name="psnr_function"></a>
 
 We can't estimate prediction of our model via loss or by eye, so we find a special function that can properly evaluate that result for us. It's called PSNR or Peak signal-to-noise ratio. That function helped us to know ratio between the maximum possible power of a signal (one monochrome channel) and the power of corrupting noise that affects the fidelity of its representation. **The higher PSNR –– the better.**
