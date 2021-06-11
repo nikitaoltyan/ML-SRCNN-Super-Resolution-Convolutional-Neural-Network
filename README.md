@@ -30,8 +30,10 @@ This project aims to improve image quality (image debluring) with the use of SRC
 ## Dataset <a name="dataset"></a>
 
 The dataset contains:
-** 13056 train images (256x128) **
-** 3200 val images (256x128) **
+
+**13056 train images (256x128)**
+
+**3200 val images (256x128)**
 
 You can find a whole lot of image dataset mainly used for super-resolution experimentation in this public <a href="https://drive.google.com/file/d/1QI3MvHTxFzwZfF1xdgJv0EJqB91yAzMG/view?usp=sharing">Google Drive folder</a>.
 
@@ -68,7 +70,17 @@ So we resized them into 1024x1024, bet it still was too big and expensive for re
 <img src="./assets/original_image_example.JPG">
 </p>
 
-So we tried to crop them into batches of images with 256x256 size but is was hopeless. 
+So we tried to crop them into batches of 16 pieces with 256x256 size each but is was hopeless. That gave us an 4000 items dataset that wasn’t enough, especially in difficult parts where sky and buildings are together. The pixelation didn’t disappear, but blur was added.
+
+<p align="center">
+<img src="./assets/wrong_working_example.JPG">
+</p>
+
+In the final stage of data preparing we changed “RGB” color channels into “L” (black and white) and divided original images into batches of 64 pieces with 128x128 size each. That’s how we get our dataset that now available.
+
+<p align="center">
+<img src="./assets/test_images_stack.JPG">
+</p>
 
 ## Model <a name="model"></a>
 
