@@ -119,6 +119,8 @@ In the final stage of data preparing we changed “RGB” color channels into �
 <img src="./assets/test_images_stack.png">
 </p>
 
+> Other images were taken from <a href="https://varlamov.ru">that</a> website
+
 ## Model <a name="model"></a>
 
 We used SRCNN architecture, that was discovered on that <a href="https://personal.ie.cuhk.edu.hk/~ccloy/files/eccv_2014_deepresolution.pdf">paper</a>.
@@ -272,6 +274,12 @@ And we got that predicted result:
 <img src="./assets/model_predict.png">
 </p>
 
+We took a random photo not from our dataset, resized it to 1024x1024. Then we crop into 64 pieces and apply to our model then reassembled it. Here's the result:
+
+<p align="center">
+<img src="./assets/model_predict_2.png">
+</p>
+
 **The best weights are available. Just download the following file:**
 
 ```sh
@@ -299,3 +307,4 @@ Following modules are used in the project:
 ## References <a name="references"></a>
 
 [1] C. Dong, C. Change Loy, K. He, and X. Tang. Learning a Deep Convolutional Network for Image Super-Resolution, https://personal.ie.cuhk.edu.hk/~ccloy/files/eccv_2014_deepresolution.pdf
+[1] I. Varlamov. Urban Photographer, https://varlamov.ru
