@@ -43,6 +43,11 @@ You can find a whole lot of image dataset mainly used for super-resolution exper
 <img src="./assets/train_example.JPG">
 </p>
 
+```sh
+# The whole dataset preparing is available in the file.
+Data_Preparing.ipynb
+```
+
 Below the line you can find a story of an idea of that dataset and how we get that data.
 
 ---
@@ -52,7 +57,7 @@ After brief examination of our task we decided that there wasn’t any easy way 
 We decided to concentrate our efforts on improving quality of skyline pictures. This is a common problem for a millions of traveling people – they often zoom horizon, trying to take their best pictures of sunsets/city skylines/historical sites.
 
 ```sh
-# The quality of original images was decreade by Image function.
+# The quality of original images was decreased by Image function.
 size = 1024, 1024
 file_path = "some/file/path"
 image = Image.open(file_path)
@@ -85,6 +90,36 @@ In the final stage of data preparing we changed “RGB” color channels into �
 ## Model <a name="model"></a>
 
 ## PSNR Function <a name="psnr_function"></a>
+
+We can't estimate prediction of our model via loss or by eye, so we find a special function that can properly evaluate that result for us. It's called PSNR or Peak signal-to-noise ratio. That function helped us to know ratio between the maximum possible power of a signal (one monochrome channel) and the power of corrupting noise that affects the fidelity of its representation. **The higher PSNR –– the better.**
+
+More information about that parameter is avaialbe <a href="https://en.wikipedia.org/wiki/Peak_signal-to-noise_ratio">here</a>.
+
+That's how function for implementing that looks like:
+
+```sh
+def psnr(label, outputs, max_val=1.):
+    """
+    Peak Signal to Noise Ratio (the higher the better).
+    PSNR = 20 * log10(MAXp) - 10 * log10(MSE).
+    label and outputs – Torch tensors.
+    """
+    label = label.cpu().detach().numpy()
+    outputs = outputs.cpu().detach().numpy()
+    img_diff = outputs - label
+    rmse = math.sqrt(np.mean((img_diff) ** 2))
+    if rmse == 0:
+        return 100
+    else:
+        PSNR = 20 * math.log10(max_val / rmse)
+        return PSNR
+```
+
+And that functios is available and called from the file:
+
+```sh
+psnr.py
+```
 
 ## Results <a name="results"></a>
 
