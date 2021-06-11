@@ -7,7 +7,9 @@ Implementation of SRCNN architecture using Deep Learning and PyTorch
 
 This project aims to improve image quality (image debluring) with the use of SRCNN model. The below image briefly explains the output we want:
 
-(HERE WILL BE IMAGE)
+<p align="center">
+<img src="./assets/output_example.JPG">
+</p>
 
 
 ## Table of Content
@@ -35,23 +37,36 @@ You can find a whole lot of image dataset mainly used for super-resolution exper
 
 **All examples of training and validation data are groped into one picture with a good quality one on the left side and a poor quality on the right.**
 
-(HERE WILL BE AN IMAGE OF TRAIN IMAGE)
+<p align="center">
+<img src="./assets/train_example.JPG">
+</p>
 
 Below the line you can find a story of an idea of that dataset and how we get that data.
 
-(HERE WILL BE A LINE)
+---
 
 After brief examination of our task we decided that there wasn’t any easy way of implementing Super Resolution for any image of any object we want.
 
 We decided to concentrate our efforts on improving quality of skyline pictures. This is a common problem for a millions of traveling people – they often zoom horizon, trying to take their best pictures of sunsets/city skylines/historical sites.
 
-(HERE WILL BE AN EXAMPLE OF CODE THAT DECREASING QUALITY)
+```sh
+# The quality of original images was decreade by Image function.
+size = 1024, 1024
+file_path = "some/file/path"
+image = Image.open(file_path)
+new_image= image.resize(size, Image.ANTIALIAS)
+    
+save_path = "some/new/file/path"
+new_image.save(save_path, optimize=True, quality=20)
+```
 
 We’ve started with dataset of skyline pictures taken by Nikita from his flat using digital slr but they were too big for any existing models: 3024x4032 pixels.
 
 So we resized them into 1024x1024, bet it still was too big and expensive for resources:
 
-(HERE WILL BE AN IMAGE OF ORIGINAL DATASET)
+<p align="center">
+<img src="./assets/original_image_example.JPG">
+</p>
 
 So we tried to crop them into batches of images with 256x256 size but is was hopeless. 
 
