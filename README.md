@@ -80,7 +80,7 @@ class SkylineDataset(Dataset):
         return transform_ops(image)
 ```
 
-Below the line you can find a story of an idea of that dataset and how we get that data.
+Below the line you can find a story of an idea of that dataset and how we got that data.
 
 ---
 
@@ -101,19 +101,19 @@ new_image.save(save_path, optimize=True, quality=20)
 
 We’ve started with dataset of skyline pictures taken by Nikita from his flat using digital slr but they were too big for any existing models: 3024x4032 pixels.
 
-So we resized them into 1024x1024, bet it still was too big and expensive for resources:
+So we resized them into 1024x1024, but it still was too big and expensive for resources:
 
 <p align="center">
 <img src="./assets/original_image_example.JPG">
 </p>
 
-So we tried to crop them into batches of 16 pieces with 256x256 size each but is was hopeless. That gave us an 4000 items dataset that wasn’t enough, especially in difficult parts where sky and buildings are together. The pixelation didn’t disappear, but blur was added.
+So we tried to crop them into batches of 16 pieces with 256x256 size each but is was hopeless. That gave us the 4000 items dataset that wasn’t enough, especially in difficult parts where sky and buildings are together. The pixelation didn’t disappear, but blur was added.
 
 <p align="center">
 <img src="./assets/wrong_working_example.jpg">
 </p>
 
-In the final stage of data preparing we changed “RGB” color channels into “L” (black and white) and divided original images into batches of 64 pieces with 128x128 size each. That’s how we get our dataset that now available.
+In the final stage of data preparing we changed “RGB” color channels into “L” (black and white) and divided original images into batches of 64 pieces with 128x128 size each. That’s how we got our dataset that now available.
 
 <p align="center">
 <img src="./assets/test_images_stack.png">
@@ -198,7 +198,11 @@ def train(model, dataloader):
 
 ## PSNR Function <a name="psnr_function"></a>
 
-We can't estimate prediction of our model via loss or by eye, so we find a special function that can properly evaluate that result for us. It's called PSNR or Peak signal-to-noise ratio. That function helped us to know ratio between the maximum possible power of a signal (one monochrome channel) and the power of corrupting noise that affects the fidelity of its representation. **The higher PSNR –– the better.**
+We can't estimate prediction of our model via loss or by eye, so we find a special function that can properly evaluate that result for us. It's called PSNR or Peak signal-to-noise ratio. That function helped us to know ratio between the maximum possible power of a signal (one monochrome channel) and the power of corrupting noise that affects the fidelity of its representation.
+
+dB (PSNR) is a special logarithmic value of the ratio of the maximum pixel value (in our single-channel case, this value is 1) to the root-mean-square error (the difference between the value of the predicted pixel with respect to Ground Truth). **The higher PSNR –– the better.**
+
+We thought it was a good idea to use this metric, because it is often used to evaluate image compression.
 
 More information about that parameter is avaialbe <a href="https://en.wikipedia.org/wiki/Peak_signal-to-noise_ratio">here</a>.
 
@@ -273,6 +277,12 @@ And we got that predicted result:
 <p align="center">
 <img src="./assets/model_predict.png">
 </p>
+
+This is the approximate improvement of the image quality by our model:
+
+| Input dB | Output dB | Improvement |
+| ------ | ------ | ------ |
+| 28 | 31 | 10.7% |
 
 We took a random photo not from our dataset, resized it to 1024x1024. Then we crop into 64 pieces and apply to our model then reassembled it. Here's the result:
 
